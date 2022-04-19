@@ -1,0 +1,104 @@
+service: serverless-project
+frameworkVersion: '3'
+
+plugins:
+  - serverless-webpack
+  - serverless-deployment-bucket
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  stage: ${opt:stage}
+  region: eu-west-1
+  stackName: ${self:service}-${opt:stage}
+  deploymentBucket:
+    name: project-deployment-${opt:stage}
+  environment:
+    ACCOUNT_ID: ${aws:accountId}
+    REGION: ${aws:region}
+  iam:
+    role:
+      statements:
+      - Effect: Allow
+        Action:
+          - "sns:Publish"
+        Resource:
+          - "*"
+      - Effect: Allow
+        Action:
+          - "sqs:DeleteMessage"
+          - "sqs:RecieveMessage"
+          - "sqs:GetQueueAttributes"
+        Resource:
+             - Fn::GetAtt:
+                - "MyQueue"
+                - "Arn"
+
+functions:
+  PublisherFunction:
+    name: publisher-lambda-${opt:stage}
+    handler: src/publisher-lambda/publisher-lambda.handler
+    memorySize: 256
+    timeout: 10
+    events:
+      - httpApi: 'POST /publish'
+  
+  SMSFunction:
+    name: subscriber-lambda-${opt:stage}
+    handler: src/sms-lambda/sms-lambda.handler
+    memorySize: 256
+    timeout: 10
+    events:
+      - sqs:
+          arn:              
+            Fn::GetAtt:
+              - "MyQueue"
+              - "Arn"
+
+resources:
+  Resources:
+    MySNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: "${opt:stage}-my-topic"
+        Subscription:
+          - Endpoint: 
+              Fn::GetAtt:
+                - "MyQueue"
+                - "Arn"
+            Protocol: "sqs"
+    
+    MyQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        DelaySeconds: 0
+        MaximumMessageSize: 1024
+        MessageRetentionPeriod: 60
+        QueueName: "my-queue-stage-${opt:stage}"
+        VisibilityTimeout: 180
+
+    
+    SNSTopicQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: "Allow SNS Messages"
+              Effect: Allow
+              Principal:
+                Service: "sns.amazonaws.com"
+              Resource: !GetAtt 
+                - "MyQueue"
+                - "Arn"
+              Action:
+                - "sqs:SendMessage"
+                - "sqs:SendMessageBatch"
+                - "sqs:RecieveMessage"
+              Condition:
+                ArnEquals:
+                  Ref: "MySNSTopic"
+        Queues:
+          - Ref: "MyQueue"

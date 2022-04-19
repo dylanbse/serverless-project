@@ -1,0 +1,43 @@
+{
+  "name": "sms-messenger",
+  "version": "1.0.0",
+  "description": "Service that sends an SMS message through an API",
+  "scripts": {
+    "build": "webpack",
+    "build:watch": "webpack --watch",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
+  },
+  "author": "Dylan Botuli",
+  "license": "ISC",
+  "devDependencies": {
+    "@aws-sdk/types": "^3.55.0",
+    "@types/aws-lambda": "^8.10.93",
+    "@types/jest": "^27.4.1",
+    "@types/node": "^17.0.25",
+    "babel-jest": "^27.5.1",
+    "fork-ts-checker-webpack-plugin": "^7.2.3",
+    "jest": "^27.5.1",
+    "serverless-iam-roles-per-function": "^3.2.0",
+    "serverless-webpack": "^5.6.1",
+    "ts-jest": "^27.1.4",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.3",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sns": "^3.67.0",
+    "@aws-sdk/client-sqs": "^3.67.0",
+    "aws-sdk": "^2.1116.0",
+    "dotenv": "^16.0.0",
+    "serverless-deployment-bucket": "^1.5.2",
+    "serverless-offline": "^8.7.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  }
+}
