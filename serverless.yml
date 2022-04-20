@@ -18,6 +18,7 @@ provider:
   environment:
     ACCOUNT_ID: ${aws:accountId}
     REGION: ${aws:region}
+    MAIN_TOPIC_ARN: arn:aws:sns:${aws:region}:${aws:accountId}:{opt:stage}-my-topic
   iam:
     role:
       statements:
@@ -98,7 +99,6 @@ resources:
                 - "sqs:SendMessageBatch"
                 - "sqs:RecieveMessage"
               Condition:
-                ArnEquals:
-                  Ref: "MySNSTopic"
+                ArnEquals: arn:aws:sns:${aws:region}:${aws:accountId}:{opt:stage}-my-topic
         Queues:
           - Ref: "MyQueue"
