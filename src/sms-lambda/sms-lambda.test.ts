@@ -30,7 +30,6 @@ describe('SMS Lambda', () => {
     it('Should return correct response when handler is called with body', async() =>  {
         spy.mockReturnValue(Promise.resolve(publishResponse))
         const result = (await smsLambda.handler(normalSQSEvent))
-        console.log('thisss --->', result)
         expect(result.statusCode).toEqual(200)
     })
     it('Should fail when handler is called without body', async() =>  {

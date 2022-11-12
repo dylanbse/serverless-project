@@ -17,7 +17,7 @@ export const handleSMS = async (payload: SMSPayload, snsClient: SNS ) => {
       return publishText
     }
     catch(e){
-      console.log('error', e)
+      console.log('error: ', e)
       return e
     }
   }

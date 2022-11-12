@@ -5,7 +5,6 @@ require('dotenv').config();
 import { handleSMS, SMSPayload } from '../utils/handleSms'
 AWS.config.update({region: 'eu-west-1'})
 const sns = new SNS({})
-const sts = new STS()
 
 export const handler = async (event: SQSEvent) => {
   try{
