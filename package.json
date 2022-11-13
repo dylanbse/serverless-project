@@ -33,7 +33,7 @@
     "aws-sdk": "^2.1116.0",
     "dotenv": "^16.0.0",
     "serverless-deployment-bucket": "^1.5.2",
-    "serverless-offline": "^8.7.0"
+    "serverless-offline": "^8.8.1"
   },
   "jest": {
     "transform": {
