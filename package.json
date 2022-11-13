@@ -31,7 +31,7 @@
     "@aws-sdk/client-sns": "^3.67.0",
     "@aws-sdk/client-sqs": "^3.67.0",
     "aws-sdk": "^2.1116.0",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.3",
     "serverless-deployment-bucket": "^1.5.2",
     "serverless-offline": "^8.7.0"
   },
