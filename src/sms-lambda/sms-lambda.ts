@@ -1,6 +1,6 @@
 import { SQSEvent } from "aws-lambda";
 import SNS from 'aws-sdk/clients/sns'
-import AWS, { STS } from 'aws-sdk'
+import AWS from 'aws-sdk'
 require('dotenv').config();
 import { handleSMS, SMSPayload } from '../utils/handleSms'
 AWS.config.update({region: 'eu-west-1'})

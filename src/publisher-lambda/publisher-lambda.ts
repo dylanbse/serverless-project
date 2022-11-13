@@ -1,5 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyEvent } from "aws-lambda";
-import AWS from 'aws-sdk'
+import AWS, { Response } from 'aws-sdk'
 import SNS from 'aws-sdk/clients/sns'
 import { publishToTopic } from '../utils/publishTopic'
 AWS.config.update({region: 'eu-west-1'})
@@ -19,18 +19,28 @@ export const handler = async (event: APIGatewayProxyEvent) => {
         body.payload.phoneNumber = formattedPhoneNumber
         const publishedMessage = await publishToTopic(body.payload, sns)
         console.log(`--- Published message result --- \n ${publishedMessage}`)
-        return makeApiResponse(200, `Message published to topic`)
+        return makeApiResponse(200, {body: `Message published to topic`})
       }
       else{
-        return makeApiResponse(403, 'Invalid phone number')
+        return makeApiResponse(403, {
+          body: 'Invalid phone number',
+          statusCode: 403
+        })
       }
     }
     else{
-      return makeApiResponse(403, 'No body found')
+      return makeApiResponse(403, {
+        body: 'No body found',
+        statusCode: 403
+      })
     }
   }
   catch(e){
-    return makeApiResponse(500, `Error: \n ${e}`)
+    return makeApiResponse(500, {
+      body: `Error: \n ${e}`,
+      statusCode: 500
+    }
+    )
   }
 }
 
@@ -52,7 +62,7 @@ const formatPhoneNumber = (phoneNumber: string) => {
   return nonWhitespaceNumber
 }
 
-export const makeApiResponse = (statusCode: number, body: string) => {
+export const makeApiResponse = (statusCode: number, body: Record<string, string | number>) => {
   return {
     statusCode,
     body
